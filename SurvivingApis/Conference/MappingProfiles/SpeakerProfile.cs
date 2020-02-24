@@ -19,6 +19,7 @@ namespace Conference.MappingProfiles
 
             CreateMap<Models.SpeakerForCreation, Speaker>();
 
+            CreateMap<Speaker, Models.SpeakerFullDto>();
 
         }
     }
