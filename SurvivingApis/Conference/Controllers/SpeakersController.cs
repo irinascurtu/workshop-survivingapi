@@ -35,6 +35,7 @@ namespace Conference.Controllers
         //get all as json sec
 
         [HttpGet(Name = "GetSpeakers")]
+        [HttpHead]
         public IActionResult GetSpeakers()
         {
             var speakersFromRepo = _speakerRepository.GetSpeakers();
@@ -43,7 +44,27 @@ namespace Conference.Controllers
             return Ok(_mapper.Map<IEnumerable<SpeakerDto>>(speakersFromRepo));
         }
 
-   
+        [HttpGet("{speakerId}", Name = "GetSpeaker")]
+        public IActionResult GetSpeaker(int speakerId)
+        {
+
+            var speakerFromRepo = _speakerRepository.GetSpeaker(speakerId);
+
+            if (speakerFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<SpeakerDto>(speakerFromRepo));
+        }
+
+
+        [HttpOptions]
+        public IActionResult GetSpeakersOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            return Ok();
+        }
 
         private IEnumerable<LinkDto> CreateLinksForSpeakers(
             SpeakerResourceParameters speakersParam,
