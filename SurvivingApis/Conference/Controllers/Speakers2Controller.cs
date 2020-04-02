@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Conference.Controllers
 { [Route("api/speakers")]
     [ApiController]
-    [ApiVersion("2.0")]
+    //[ApiVersion("2.0")]
     public class Speakers2Controller : ControllerBase
     {
         // GET: api/Speakers2

@@ -21,6 +21,7 @@ namespace Conference.Controllers
 {
 
     [Route("api/[controller]")]
+    //[ApiVersion("2.0")]
     [ApiController]
     public class SpeakersController : ControllerBase
     {
