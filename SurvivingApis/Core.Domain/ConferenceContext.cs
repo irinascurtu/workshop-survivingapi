@@ -26,23 +26,23 @@ namespace Core.Domain
                 new Speaker()
                 {
                     Id = 1,
-                    FirstName = "Berry",
-                    LastName = "Griffin Beak Eldritch",
-                    CompanyName = "Griffin Corp"
+                    FirstName = "Mickey",
+                    LastName = "McMouse",
+                    CompanyName = "Whole Corp"
                 },
                 new Speaker()
                 {
                     Id = 2,
-                    FirstName = "Nancy",
-                    LastName = "Swashbuckler Rye",
-                    CompanyName = "Swash Corp"
+                    FirstName = "Donatella",
+                    LastName = "McSharp",
+                    CompanyName = "REST Ltd"
                 },
                 new Speaker()
                 {
                     Id = 3,
-                    FirstName = "Cici",
-                    LastName = "Ryee",
-                    CompanyName = "Swash Corp"
+                    FirstName = "Minnie",
+                    LastName = "McPatch",
+                    CompanyName = "Mouse Org"
 
                 }
 
@@ -53,25 +53,24 @@ namespace Core.Domain
                 {
                     Id = 1,
                     SpeakerId = 1,
-                    Title = "Commandeering a Ship Without Getting Caught",
+                    Title = "Delivering a bad product",
                     Description =
-                        "Commandeering a ship in rough waters isn't easy. " +
-                        " Commandeering it without getting caught is even harder.  " +
-                        "In this course you'll learn how to sail away and avoid those pesky musketeers."
+                        "Delivering a good product in isn't easy. " +
+                        " Delivering a bad one without getting caught is even harder.  " 
                 },
                    new Talk()
                    {
                        Id = 2,
                        SpeakerId = 1,
-                       Title = "Avoiding Brawls While Drinking as Much Rum as You Desire",
-                       Description = "Every good pirate loves rum, but it also has a tendency to get you into trouble.  In this course you'll learn how to avoid that.  This new exclusive edition includes an additional chapter on how to run fast without falling while drunk."
+                       Title = "Avoiding CodeReviews Disasters",
+                       Description = "Every good developer loves code reviews, but it also can get you into trouble.  In this talk you'll learn how to avoid that."
                    },
                    new Talk
                    {
                        Id = 3,
                        SpeakerId = 2,
-                       Title = "Overthrowing Mutiny",
-                       Description = "In this course, the author provides tips to avoid, or, if needed, overthrow pirate mutiny."
+                       Title = "Overthrowing bad code",
+                       Description = "In this talk, the speaker provides tips to avoid, or, if needed, overthrow bad code."
                    }
 
                 );

@@ -11,8 +11,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text.Json;
+using System.Xml.Serialization;
 using Conference.Helpers;
+using Microsoft.Net.Http.Headers;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+
 
 namespace Conference.Controllers
 {
@@ -35,13 +38,44 @@ namespace Conference.Controllers
         //get all as json sec
 
         [HttpGet(Name = "GetSpeakers")]
-        [HttpHead]
-        public IActionResult GetSpeakers()
+        // [HttpHead]
+        public IActionResult GetSpeakers([FromQuery]SpeakerResourceParameters speakersParam)
         {
-            var speakersFromRepo = _speakerRepository.GetSpeakers();
+            var speakersFromRepo = _speakerRepository.GetSpeakers(speakersParam);
             //map from repo to DTO
+            var paginationMetadata = new
+            {
+                totalCount = speakersFromRepo.TotalCount,
+                pageSize = speakersFromRepo.PageSize,
+                currentPage = speakersFromRepo.CurrentPage,
+                totalPages = speakersFromRepo.TotalPages
+            };
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            //response.Headers.Add("X-Paging-PageNo", pageNo.ToString());
+            //response.Headers.Add("X-Paging-PageSize", pageSize.ToString());
+            //response.Headers.Add("X-Paging-PageCount", pageCount.ToString());
+            //response.Headers.Add("X-Paging-TotalRecordCount", total.ToString());
+            var links = CreateLinksForSpeakers(speakersParam,
+                                              speakersFromRepo.HasNext,
+                                              speakersFromRepo.HasPrevious);
+            var shapedSpeakers = _mapper.Map<IEnumerable<SpeakerDto>>(speakersFromRepo)
+                .ShapeData();
 
-            return Ok(_mapper.Map<IEnumerable<SpeakerDto>>(speakersFromRepo));
+            var speakerWithLinks = shapedSpeakers.Select(speaker =>
+            {
+                var speakerAsDictionary = speaker as IDictionary<string, object>;
+                var speakerLinks = CreateLinksForSpeaker((int) speakerAsDictionary["Id"]);
+                speakerAsDictionary.Add("links", speakerLinks);
+                return speakerAsDictionary;
+            });
+
+            var linkedResource = new
+            {
+                value = speakerWithLinks,
+                links
+            };
+
+            return Ok(linkedResource);
         }
 
         [HttpGet("{speakerId}", Name = "GetSpeaker")]

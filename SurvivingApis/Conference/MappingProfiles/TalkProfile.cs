@@ -14,11 +14,9 @@ namespace Conference.MappingProfiles
         public TalkProfile()
         {
             CreateMap<Talk, Models.TalkDto>();
-          //  CreateMap<Models.TalkForModificationDto, Talk>();
+            CreateMap<Models.TalkForModificationDto, Talk>();
             CreateMap<TalkUpdateDto, Talk>();
 
-            //CreateMap<Models.CourseForCreationDto, Entities.Course>();
-         
             CreateMap<Talk, Models.TalkUpdateDto>();
         }
     }
