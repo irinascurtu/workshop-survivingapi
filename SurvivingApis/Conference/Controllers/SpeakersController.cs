@@ -19,6 +19,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Conference.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class SpeakersController : ControllerBase
@@ -35,10 +36,25 @@ namespace Conference.Controllers
         }
 
 
-        //get all as json sec
+        [HttpOptions]
+        public IActionResult GetSpeakersOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            return Ok();
+        }
+
+        //[HttpGet(Name = "GetSpeakers")]
+        //[HttpHead]
+        //public IActionResult GetSpeakers()
+        //{
+        //    var speakersFromRepo = _speakerRepository.GetSpeakers();
+        //    //map from repo to DTO
+
+        //    return Ok(_mapper.Map<IEnumerable<SpeakerDto>>(speakersFromRepo));
+        //}
 
         [HttpGet(Name = "GetSpeakers")]
-        // [HttpHead]
+        [HttpHead]
         public IActionResult GetSpeakers([FromQuery]SpeakerResourceParameters speakersParam)
         {
             var speakersFromRepo = _speakerRepository.GetSpeakers(speakersParam);
@@ -56,15 +72,16 @@ namespace Conference.Controllers
             //response.Headers.Add("X-Paging-PageCount", pageCount.ToString());
             //response.Headers.Add("X-Paging-TotalRecordCount", total.ToString());
             var links = CreateLinksForSpeakers(speakersParam,
-                                              speakersFromRepo.HasNext,
-                                              speakersFromRepo.HasPrevious);
+                speakersFromRepo.HasNext,
+                speakersFromRepo.HasPrevious);
+
             var shapedSpeakers = _mapper.Map<IEnumerable<SpeakerDto>>(speakersFromRepo)
                 .ShapeData();
 
             var speakerWithLinks = shapedSpeakers.Select(speaker =>
             {
                 var speakerAsDictionary = speaker as IDictionary<string, object>;
-                var speakerLinks = CreateLinksForSpeaker((int) speakerAsDictionary["Id"]);
+                var speakerLinks = CreateLinksForSpeaker((int)speakerAsDictionary["Id"]);
                 speakerAsDictionary.Add("links", speakerLinks);
                 return speakerAsDictionary;
             });
@@ -80,6 +97,7 @@ namespace Conference.Controllers
 
         [HttpGet("{speakerId}", Name = "GetSpeaker")]
         public IActionResult GetSpeaker(int speakerId)
+
         {
 
             var speakerFromRepo = _speakerRepository.GetSpeaker(speakerId);
@@ -92,14 +110,7 @@ namespace Conference.Controllers
             return Ok(_mapper.Map<SpeakerDto>(speakerFromRepo));
         }
 
-
-        [HttpOptions]
-        public IActionResult GetSpeakersOptions()
-        {
-            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
-            return Ok();
-        }
-
+        #region baseline
         private IEnumerable<LinkDto> CreateLinksForSpeakers(
             SpeakerResourceParameters speakersParam,
             bool hasNext, bool hasPrevious)
@@ -190,5 +201,6 @@ namespace Conference.Controllers
 
             return links;
         }
+        #endregion
     }
 }

@@ -19,13 +19,13 @@ namespace Conference.Controllers
 
     [ApiController]
     [Route("api/speakers/{speakerId}/talks")]
-    public class TalksController : ControllerBase
+    public class SpeakerTalksController : ControllerBase
     {
         private readonly ITalkRepository _talkRepository;
         private readonly ISpeakerRepository _speakerRepository;
         private readonly IMapper _mapper;
 
-        public TalksController(ITalkRepository talkRepository,
+        public SpeakerTalksController(ITalkRepository talkRepository,
             ISpeakerRepository speakerRepository, IMapper mapper
             )
         {
@@ -33,6 +33,7 @@ namespace Conference.Controllers
             _speakerRepository = speakerRepository;
             _mapper = mapper;
         }
+
 
         [HttpGet(Name = "GetTalksForSpeaker")]
         public ActionResult<IEnumerable<TalkDto>> GetTalksForSpeaker(int speakerId)
@@ -64,6 +65,8 @@ namespace Conference.Controllers
             return Ok(_mapper.Map<TalkDto>(talkForSpeaker));
         }
 
+     
+
         [HttpPost(Name = "CreateTalkForSpeaker")]
         public ActionResult<TalkDto> CreateTalkForSpeaker(
             int speakerId, TalkForModificationDto talk)
@@ -78,6 +81,7 @@ namespace Conference.Controllers
             _talkRepository.Save();
 
             var talkToReturn = _mapper.Map<TalkDto>(talkEntity);
+
             return CreatedAtRoute("GetTalkForSpeaker",
                 new
                 {
@@ -118,6 +122,7 @@ namespace Conference.Controllers
             return NoContent();
         }
 
+
         [HttpPatch("{talkId}")]
         public ActionResult PartiallyUpdateTalkForSpeaker(int speakerId,
             int talkId,
@@ -126,7 +131,7 @@ namespace Conference.Controllers
             if (!_speakerRepository.SpeakerExists(speakerId))
             {
                 return NotFound();
-            } 
+            }
 
             var talkForSpeakerFromRepo = _talkRepository.GetTalk(speakerId, talkId);
 
@@ -155,8 +160,8 @@ namespace Conference.Controllers
 
             var talkToPatch = _mapper.Map<TalkUpdateDto>(talkForSpeakerFromRepo);
             // add validation
-             patchDocument.ApplyTo(talkToPatch, ModelState);
-            //patchDocument.ApplyTo(talkToPatch);
+
+            patchDocument.ApplyTo(talkToPatch);
             if (!TryValidateModel(talkToPatch))
             {
                 return ValidationProblem(ModelState);
